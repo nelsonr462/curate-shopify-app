@@ -1,0 +1,178 @@
+<% include ./include/header.ejs%>
+  <link rel="stylesheet" href="./css/ladda-themeless.min.css" >
+  <script type="text/javascript">
+    ShopifyApp.init({
+      apiKey: <%-JSON.stringify(appId)%>,
+      shopOrigin: 'https://'+<%-JSON.stringify(shop)%>+'.myshopify.com'
+    });
+    
+    ShopifyApp.ready(function(){
+      ShopifyApp.Bar.initialize({
+        title: 'Settings',
+        buttons: {
+          primary : { label: "Help/Install", href:"/help?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+          secondary: [
+            { label: "Products", href:"/dashboard?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+            { label: "Groups", href:"/groups?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+            { label: "Settings", href:"/settings?shop="+<%-JSON.stringify(shop)%>, target:"app" }
+            
+          ]
+        }
+     
+      });
+    });
+  </script>
+  
+  
+ 
+  <!-- Custom styles for this template -->
+  <link href="./css/bootstrap-switch.min.css" rel="stylesheet">
+  <link href="./css/dashboard.css" rel="stylesheet">
+
+</head>
+
+<body class="settingsContainer">
+
+  <div class="container-fluid">
+    <div class="row" style="margin: 0">
+        <div class="col-sm-12 col-md-12 main">
+        
+            <div class="row" style="margin-left: 0; margin-right: 0;">
+                
+                <div id="dataHolder" data="<%=settingsData%>">
+                  
+                  <div class="col-md-3 optionForm">
+                    <h4>Section Headers</h4>
+                    <p class="help-block">Customize the header text that goes above your related products sections.</p>
+                  </div>
+                  
+                  <div class="col-md-9 optionForm">
+                    <div class="form-group">
+            
+                        <label for="productPageTitle">Product Page Header</label>
+                        <input type="text" class="form-control" id="productPageTitle" placeholder="You may also like...">
+                        <p class="help-block">This is the header text that will display above your related products section on product pages. Leave blank for none.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutPageTitle">Checkout Page Header</label>
+                        <input type="text" class="form-control" id="checkoutPageTitle" placeholder="Don't forget to check these out!">
+                        <p class="help-block">This is the header text that will display above your related products section on the checkout page. Leave blank for none.</p>
+                    </div>
+                  </div>
+            
+                  <div class="col-md-12 settingsDivider"></div>
+                    
+                  <div class="col-md-3 optionForm">
+                    <h4>Max Product Count</h4>
+                    <p class="help-block">Customize the number of products that display in each type of section.</p>
+                    
+                  </div>
+                  
+                  <div class="col-md-9 optionForm">
+                    <div class="form-group">
+                        <label for="productPageMaxItems">Max Products on Product Page</label>
+                        <select id="productPageMaxItems" class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                        <p class="help-block">Controls the amount of related products that display on a product page.</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="checkoutPageMaxItems">Max Products on Checkout Page</label>
+                        <select id="checkoutPageMaxItems" class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                        <p class="help-block">Controls the amount of related products that display on the checkout page.</p>
+                    </div>
+                    
+                  </div>
+                  
+                  <div class="col-md-12 settingsDivider"></div>
+                    
+                  <div class="col-md-3 optionForm">
+                    <h4>Display options</h4>
+                    <p class="help-block">Customize where your related products sections appear on your site and what will display on products that do not have related products groups.</p>
+                  </div>
+                  
+                  <div class="col-md-9 optionForm">
+                    <div class="form-group">
+                        <label for="visibilitySettings">Visibility Settings</label>
+                        <select id="visibilitySettings" class="form-control">
+                            <option data="0">Product</option>
+                            <option data="1">Cart</option>
+                            <option data="2">Product and Cart</option>
+                            <option data="3">None</option>
+                        </select>
+                        <p class="help-block">Controls which pages the related products should display on.</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="showDefault">Enable Default Related Products</label>
+                      <br>
+                      <input type="checkbox" id="showDefault"  checked>
+                      <p class="help-block">Enabling this will show the default collection-based related products bar on all products with no selected group.</p>
+                    </div>
+                    
+                  </div>
+                  
+                    
+                    <button type="button" class="btn btn-primary ladda-button saveSettings" data-style="expand-right"><span class="ladda-label">Save</span></button>
+                    
+                    <div class="alert alert-success fade in collapse" style="opacity: 0; margin-top: 20px;">
+                        <strong>Settings saved!</strong> 
+                    </div>
+                </div>
+                
+            </div>
+        
+        </div>
+
+    </div>
+    
+ 
+    
+  </div>
+
+ <!--  MODALS  -->
+  
+ <!--  Save Settings Confirmation  -->
+  <div class="modal fade" id="saveSettingsModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Save Settings Changes</h4>
+        </div>
+        
+        <div id="saveSettingsDesc" class="modal-body">
+          Do you want to save these changes to your settings?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary ladda-button saveSettings" data-style="expand-right"><span class="ladda-label">Yes</span></button>
+          <button type="button" class="btn btn-default cancelButton" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <input type="hidden" name="_csrf" value=<%=csrfToken%>>
+  
+  <!--  /MODALS  -->
+
+  <% include ./include/footer.ejs%>
+
+  <script src="./js/spin.min.js"></script>
+  <script src="./js/ladda.min.js"></script>
+  <script src="./js/bootstrap-switch.min.js"></script>
+  <script src="./js/settings.js"></script>
+</body>
+
+</html>

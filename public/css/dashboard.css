@@ -1,0 +1,263 @@
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+  border: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+}
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.navbar-nav > li .active > a,
+.navbar-nav > li .active > a:hover,
+.navbar-nav > li .active > a:focus {
+  color: #fff;
+  background-color: transparent;
+}
+
+
+/*
+ * Main content
+ */
+
+.main {
+  padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+  border-radius: 50%;
+}
+
+/* CUSTOM STUFF STARTS HERE */
+
+.buttonHolder {
+  padding-bottom: 15px
+}
+
+.dataTables_filter {
+  text-align: left !important;
+}
+
+.correctedLength {
+  text-align: right !important;
+}
+
+.tableButtons {
+  text-align: center;
+}
+
+.editButton {
+  float: right;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.productData {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.productHeaders th{
+  text-align: center;
+}
+
+.optionForm {
+  padding: 10px 0px;
+}
+
+.settingsDivider {
+  height: 1px;
+  background-color: #eee;
+  margin: 20px 0px;
+}
+
+.saveSettings {
+  /*margin-left: 15px;*/
+}
+
+/* HELP/INSTALL CSS*/
+
+.section-spr-install {
+  max-width: 100%;
+  padding: 50px 0;
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.section-spr-install h1 {
+  color: #999;
+  font-size: 14px;
+  line-height: 18px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.section-spr-install h2 {
+  font-size: 24px;
+  line-height: 26px;
+  padding-bottom: 20px;
+  color: #191919;
+  margin: 0;
+  font-weight: 400;
+  
+}
+
+.section-spr-install p {
+  color: #666;
+  font-size: 18px;
+  line-height: 26px;
+  margin-bottom: 12px;
+  
+}
+
+.spr-copy {
+  text-align: center;
+}
+
+.spr-install-step {
+  float: none;
+  margin: 0 auto;
+}
+
+.spr-install-step img {
+  padding-top: 55px;
+  float: right;
+  max-width: 100%;
+}
+
+
+.spr-install-snippet {
+  text-align-last: center;
+  display: block;
+  margin-right: 25%;
+}
+
+.spr-install-snippet code {
+  background-color: transparent;
+  color: white;
+}
+
+.spr-view-snippet {
+  margin-right: 0;
+}
+
+.spr-install-snippet, .spr-view-snippet {
+  display: block;
+  font-size: 16px;
+  color: #fff;
+  background: #8c969d;
+  padding: 20px;
+  border-radius: 10px;
+  
+}
+
+.spr-snippet-block {
+  text-align: left;
+  background-color: transparent;
+  color: white;
+  
+}
+
+.spr-snippet-block code strong {
+  color: green;
+}
+
+.tc {
+  text-align: center !important;
+}
+
+.inner-left {
+  padding-left: 0px;
+}
+
+.inner-right {
+  padding-right: 0px;
+}
+
+.manage-sub-button {
+  margin: 40px 0;
+}
+
+.help-block {
+  padding-right: 20px;
+}
+
+.dangerZone {
+  color: #c54040;
+}

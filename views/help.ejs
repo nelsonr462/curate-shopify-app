@@ -1,0 +1,151 @@
+<% include ./include/header.ejs%>
+
+    <title>Sleepless Playground ~ Curate</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="./css/dashboard.css" rel="stylesheet">
+    
+    <script type="text/javascript">
+        ShopifyApp.init({
+          apiKey: <%-JSON.stringify(appId)%>,
+          shopOrigin: 'https://'+<%-JSON.stringify(shop)%>+'.myshopify.com'
+        });
+        
+        ShopifyApp.ready(function(){
+          ShopifyApp.Bar.initialize({
+            title: 'Help',
+            buttons: {
+              primary : { label: "Help/Install", href:"/help?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+              secondary: [
+                { label: "Products", href:"/dashboard?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+                { label: "Groups", href:"/groups?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+                { label: "Settings", href:"/settings?shop="+<%-JSON.stringify(shop)%>, target:"app" }
+                
+              ]
+            }
+         
+          });
+        });
+    </script>
+
+</head>
+
+
+<body>
+    <div class="row row-attached-to-top section section-spr-install">
+        <div class="col-xs-12">
+            <div class="col-xs-10 col-xs-offset-1 spr-install-step tc">
+                <h1>Step 1</h1>
+                <h2>Copy the related products code snippet</h2>
+                <p>This code snippet is what displays the related products section on your website.<br />Copy the following to your clipboard:</p>
+
+                <div class="col-xs-offset-3 col-xs-6 spr-install-snippet">
+                    <code>{%- include &quot;curate&quot; -%}</code>
+                </div>
+                <p class="col-xs-12"><a href="javascript:void(0)" class="small" data-clipboard-text='{%- include "curate" -%}' id="snippet_code">Click here to copy to your clipboard</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row section section-spr-install">
+        <div class="col-xs-12">
+            <div class="col-xs-10 col-xs-offset-1 spr-install-step">
+                <div class="col-xs-6 inner-left">
+                    <h1>Step 2</h1>
+                    <h2>Paste the related products code snippet into your theme</h2>
+                    <p>
+                        <a href='<%-"https:\/\/"+shop+".myshopify.com/admin/themes/"+JSON.stringify(themeId)+"?key=templates/product.liquid"-%>' target='_new'>Open your <strong>templates/product.liquid</strong> file</a>.
+                    </p>
+                    <p>Paste your code snippet into the area where you want your related products to appear, usually beneath the <code>product.description</code> tag. Once added, save your theme.</p>
+                    <p>
+                        <strong>Can't find your product.description?</strong>
+                    </p>
+                    <div class="spr-help-step">
+                        <p>If the theme you’re using supports sections, the content of <strong>product.liquid</strong> may look empty. In this instance, you can locate <code>product.description</code> and continue installation by following these steps:</p>
+                        <ul>
+                            <li>To verify if the theme you’re using supports sections, look for <code>{% section 'file-name' %}</code> in <strong>product.liquid</strong>.</li>
+                            <li>Copy the file name that’s displayed between the quotation marks (" "). In this example, it’s <code>file-name</code>.</li>
+                            <li>Paste that file name in the search field of the code editor to locate your file. It will most likely be in the 'Sections' folder.</li>
+                            <li>Open that file and locate <code>product.description</code> to continue the installation.</li>
+                        </ul>
+                    </div>
+                    <p>
+                        Keep in mind, this is an initial suggestion, and you can place the snippet in other locations to better suit your shops look!
+                    </p>
+                </div>
+                <div class="col-xs-6 inner-right">
+                    <a href='<%-"https:\/\/"+shop+".myshopify.com/admin/themes/"+JSON.stringify(themeId)+"?key=templates/product.liquid"-%>' target='_new'><img src="https://productreviews.shopifycdn.com/assets/install-image-1-57a457788c4d3b667bd29d9e138524e4edf5d946cadf7decc29c5adf8b483a8d.png" alt="Install image 1" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row section section-spr-install">
+        <div class="col-xs-12">
+            <div class="col-xs-10 col-xs-offset-1 spr-install-step tc">
+                <div class="clearfix">
+                    <div class="col-xs-12">
+                        <h1>Step 3</h1>
+                        <h2>Add the related products code snippet to your cart page</h2>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 spr-optional-step inner-left">
+
+                    <p>Copy the same following code snippet to your clipboard:</p>
+
+                    <div class="col-xs-offset-3 col-xs-6 spr-install-snippet">
+                        <code>{%- include &quot;curate&quot; -%}</code>
+                    </div>
+                    <p class="col-xs-12 spr-copy"><a href="javascript:void(0)" class="small" data-clipboard-text='{%- include "curate" -%}' id="snippet_code_2">Click here to copy to your clipboard</a></p>
+
+                    <p><a href='<%-"https:\/\/"+shop+".myshopify.com/admin/themes/"+JSON.stringify(themeId)+"?key=templates/cart.liquid"-%>' target='_new'>Open your <strong>templates/cart.liquid</strong> file</a>.</p>
+                    <p>In the template, find the place where the cart's logic ends, and paste after that code block. It may look something like this:</p>
+
+                    <div class="spr-view-snippet spr-snippet-block">
+                        <pre>
+                            <code>{% if additional_checkout_buttons %}
+                                        &lt;div class="cart__additional_checkout"&gt;
+                                          {{ content_for_additional_checkout_buttons }}
+                                        &lt;/div&gt;
+                                      {% endif %}
+                                    &lt;/div&gt;
+                                  &lt;/div&gt;
+                                &lt;div&gt;
+                              &lt;/form&gt;
+
+                            {% else %}
+                              {% comment %}
+                                The cart is empty
+                              {% endcomment %}
+                              &lt;h2&gt;{{ &quot;cart.general.title&quot; | t }}&lt;/h2&gt;
+                              &lt;p&gt;{{ &quot;cart.general.empty&quot; | t }}&lt;/p&gt;
+                              &lt;p&gt;{{ &quot;cart.general.continue_browsing_html&quot; | t }}&lt;/p&gt;
+                            {% endif %}
+                            <strong>{% include &quot;curate&quot; %}</strong>
+                            </code>
+                        </pre>
+                    </div>
+                    <p>Then, save your theme.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row section section-spr-install">
+        <div class="col-xs-12">
+            <div class="col-xs-8 col-xs-offset-2 spr-install-step tc">
+                <h1>Step 4</h1>
+                <h2>Verify the code snippet is working</h2>
+                <p>Now that you have the snippet inserted into your theme, it's time to test things out!</p>
+                <a href="/groups">
+                    <button class="btn btn-primary btn-large checksnippet-btn">Curate your first group!</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

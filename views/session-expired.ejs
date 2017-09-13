@@ -1,0 +1,65 @@
+<% include ./include/header.ejs%>
+  <link rel="stylesheet" href="./css/ladda-themeless.min.css" >
+  <script type="text/javascript">
+    console.log("Location: "+window.location)
+    // ShopifyApp.init({
+    //   apiKey: <%-JSON.stringify(appId)%>,
+    //   shopOrigin: 'https://'+<%-JSON.stringify(shop)%>+'.myshopify.com'
+    // });
+    
+    // ShopifyApp.ready(function(){
+    //   ShopifyApp.Bar.initialize({
+    //     title: 'Settings'
+     
+    //   });
+    // });
+  </script>
+  
+  
+ 
+  <!-- Custom styles for this template -->
+  <link href="./css/dashboard.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row" style="margin: 0">
+        <div class="col-sm-12 col-md-12 main">
+        
+        
+            <h2 class="sub-header">Woops!</h2>
+            <p>Looks like we've got some sort of session mixup! Please log back in to Shopify or click on the App from your app list to continue.</p>
+            
+            <p>Click <a href="/enableSafariCookies" id="enableCookieLink" target="_blank">here</a> and refresh this page to accept the cookies if you are using Safari.</p>
+            
+            <p> <strong>Note: </strong>Please ensure you are not running any extensions or private/incognito modes that may block cookies/sessions. This will prevent the site from running properly.</p>
+        
+        </div>
+
+    </div>
+    
+ 
+    
+  </div>
+
+  <% include ./include/footer.ejs%>
+</body>
+
+<script type="text/javascript">
+  var reloadParent = window.top.location.reload()
+  
+  window.addEventListener('message', function(e) {
+    var message = e.data
+    console.log("MESSAGE RECEIVED: "+message)
+  })
+
+  $("#enableCookieLink").click(function(event) {
+    event.preventDefault()
+    window.open("/enableSafariCookies", "_blank")
+    reloadParent()
+  })
+</script>
+
+</html>

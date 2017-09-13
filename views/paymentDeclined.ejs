@@ -1,0 +1,65 @@
+<% include ./include/header.ejs%>
+  <link rel="stylesheet" href="./css/ladda-themeless.min.css" >
+  <script type="text/javascript">
+    console.log("Location: "+window.location)
+    ShopifyApp.init({
+      apiKey: <%-JSON.stringify(appId)%>,
+      shopOrigin: 'https://'+<%-JSON.stringify(shop)%>+'.myshopify.com'
+    });
+    
+    ShopifyApp.ready(function(){
+      ShopifyApp.Bar.initialize({
+        title: 'App Deactivation'
+     
+      });
+    });
+  </script>
+  
+  
+ 
+  <!-- Custom styles for this template -->
+  <link href="./css/dashboard.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row" style="margin: 0">
+        <div class="col-sm-12 col-md-12 main">
+        
+        
+            <h2 class="sub-header">Hey there!</h2>
+            <p>Seems like you've declined the payment or deactivated the app.</p>
+            
+            <p>If you want to reactivate the app, click <a href="/payment">here</a> and you'll be able to access the app's features again.</p>
+            
+            <p>Looking to uninstall? Navigate back to your apps panel (the puzzle piece in your sidebar) and click the X on Curate by Sleepless.</p>
+        
+        </div>
+
+    </div>
+    
+ 
+    
+  </div>
+
+  <% include ./include/footer.ejs%>
+</body>
+
+<script type="text/javascript">
+//   var reloadParent = window.top.location.reload()
+  
+//   window.addEventListener('message', function(e) {
+//     var message = e.data
+//     console.log("MESSAGE RECEIVED: "+message)
+//   })
+
+//   $("#enableCookieLink").click(function(event) {
+//     event.preventDefault()
+//     window.open("/enableSafariCookies", "_blank")
+//     reloadParent()
+//   })
+</script>
+
+</html>

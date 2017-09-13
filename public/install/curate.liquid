@@ -1,0 +1,314 @@
+{% if template contains 'product' %}
+  {% assign cscurrentpage = 'product' %}
+{% endif %}  
+{% if template == 'cart' %}
+  {% assign cscurrentpage = 'cart' %}
+{% endif %}
+
+{% comment %} Verfiy installed settings {% endcomment %}
+{% if shop.metafields.shopifycrpSettings.Settings != null %}
+
+<script>!window.jQuery && document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"><\/script>')</script>
+<script>if ((typeof Shopify.formatMoney) === 'undefined') {
+ 	document.write('<script src="{{ 'api.jquery.js' | shopify_asset_url  }}"><\/script>');
+}
+</script>
+<script type="text/javascript" charset="utf-8">
+  //<![CDATA[
+  {% comment %} ========= SET LOCAL SETTINGS VARIABLES =========== {% endcomment %}
+  
+  var settings = JSON.parse({{ shop.metafields.shopifycrpSettings.Settings | json }});
+  console.log(settings)
+  var productVisibility = settings['visibility']  
+  var showDefault = settings["showDefault"]
+  {% if cscurrentpage == 'product' %}
+    //product specific settings
+    var productPageTitle = settings['productPageTitle'];
+    var productPageMaxItems = settings['productPageMaxItems'];
+    var checkoutPageMaxItems = null;
+  {% else %}
+    //cart/basket settings
+    var checkoutPageTitle = settings['checkoutPageTitle']; 
+    var checkoutPageMaxItems = settings['checkoutPageMaxItems']; 
+    var productPageMaxItems = null;
+
+  {% endif %}
+  
+  {% comment %} ============== SET LOCAL SETTINGS VARIABLES =============={% endcomment %}
+
+  //]]>
+  </script> 
+
+{% endif %}
+
+{% comment %} ======= CSS STYLING FOR RELATED PRODUCTS ======{% endcomment %}
+
+<style type="text/css">
+  #cross-sell{float:left;clear:both;width:100%;}
+  h3.crossselltitle{margin:25px 0;}
+  .cross-sell{overflow:hidden;list-style-type:none;margin:0;padding:0;clear:both;}
+  .cross-sell *{font-size:13px; text-align:center; padding:0;}
+  .cross-sell h4{border:none;margin:5px 0 0 0;line-height:1.5;}
+  .cross-sell div.image{height:180px;}
+  .cross-sell li{float:left; padding:0 0 10px 0;margin:0 14px 30px 0;position:relative;width:174px;}
+  .cross-sell li:last-child{margin-right:0;}
+  .cross-sell li .image{}
+  .cross-sell li .image img{margin:0px 0 10px 0px;float:left;width:100%;}
+  .cross-sell li .producttitle{float:left;padding:5px 0;width:100%;min-height:56px;}
+  .cross-sell li a{text-decoration:none;font-size:115%;line-height:20px;padding:5px;}
+  .cross-sell li .money a{font-size:180%;float:left;text-align:center; padding:5px 0;width:100%;}
+</style>
+
+{% comment %} ================ END CSS STLYING ================ {% endcomment %}
+
+<div id="cross-sell"></div>
+
+<script type="text/javascript" charset="utf-8">
+  //<![CDATA[
+  var sectionHeader
+  var groupId
+  var groupInfo
+  var maxItems
+  
+  {% comment %} =========== SET PAGE-SPECIFIC SETTINGS ============{% endcomment %}
+
+  {% if cscurrentpage == 'product' %}
+    maxItems = productPageMaxItems
+    // If (Product) or (Product and Checkout) visibility are set
+    if(productVisibility == 0 || productVisibility == 2) {
+      {% if product.metafields.shopifycrpGroups.Group != null %}
+        {% assign defaultProductCount = shop.metafields.shopifycrpSettings.Settings.productPageMaxItems %}
+        groupId = JSON.parse({{product.metafields.shopifycrpGroups.Group | json}}).id
+
+      {% endif %}
+        if(productPageTitle.length) {
+          sectionHeader = '<h3 class="crossselltitle">'+ productPageTitle +'</h3>'
+        }
+    } else {
+      throw new Error('Visibility for products disabled.')
+    }
+  {% else %}
+    maxItems = checkoutPageMaxItems
+    // If (Checkout) or (Product and Checkout) visibility are set
+    if(productVisibility == 1 || productVisibility == 2) {
+      {% if product.metafields.shopifycrpGroups.Group != null and product.metafields.shopifycrpGroups.Group != '{\"name\":\"None\",\"id\":\"\"}'  %}
+        groupInfo = JSON.parse({{ product.metafields.shopifycrpGroups.Group | json }})
+        groupId = groupInfo["id"]
+        
+      {% endif %}
+      {% assign defaultProductCount = shop.metafields.shopifycrpSettings.Settings.checkoutPageMaxItems %}
+      if(checkoutPageTitle.length) {
+        sectionHeader = '<h3 class="crossselltitle">'+ checkoutPageTitle +'</h3>'
+      }
+      
+      showDefault = true
+    } else {
+      throw new Error("Visibility for checkout disabled.")
+    }
+  {% endif %}
+  
+  {% comment %} =========== END SET PAGE-SPECIFIC SETTINGS ============={% endcomment %}
+    
+  {% comment %} =========== DEFAULT RANDOMIZER FUNCTION ============= {% endcomment %}
+  (function($) {
+      $.fn.pick = function(how_many) {
+
+        var how_many = (productPageMaxItems != null ? productPageMaxItems : checkoutPageMaxItems)
+
+        // Picking random numbers without repeating. 
+        var index_array = [];
+        var original_obj_size = this.size();
+        for (var i = 0; i < original_obj_size; i++) {
+            index_array.push(i);
+        }
+        //+ Jonas Raoni Soares Silva
+        //@ http://jsfromhell.com/array/shuffle [rev. #1]
+        var shuffle = function(v) {
+            for (var j, x, i = v.length; i; j = parseInt(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x);
+            return v;
+        };
+        var new_index_array = shuffle(index_array).slice(0, how_many);
+
+        // Ditching unpicked elements and removing those from the returned set.
+        return this.each(function(i) {
+            if ($.inArray(i, new_index_array) === -1) {
+                $(this).remove();
+            }
+        }).filter(function() {
+            if (this.parentNode === null) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
+      };
+  })(jQuery);
+  
+  {% comment %} =========== END DEFAULT RANDOMIZER FUNCTION ============= {% endcomment %}
+  
+  {% comment %} =========== GET GROUP ============= {% endcomment %}
+  
+  if(groupId != "" && groupId != null) {
+    $('#cross-sell').append(sectionHeader + '<ul class="cross-sell"></ul>'); // write the title and container to the page
+    var crpList = $("ul.cross-sell")
+    groupData = JSON.parse({{shop.metafields.shopifycrpGroups[groupName] | json}})
+    console.log(groupId)
+    
+    $.ajax({
+      cache: true,
+      async: false,
+      dataType: "json",
+      url: "/tools/crp?productId={{product.id}}",
+      success: function(data){
+          var shuffle = function(v) {
+              for (var j, x, i = v.length; i; j = parseInt(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x);
+              return v;
+          }
+          
+          var maxItems = (productPageMaxItems ? productPageMaxItems : checkoutPageMaxItems)
+          var productData = data.productData
+          productData = shuffle(productData)
+
+      		console.log(data)
+      		for(var i = 0; i < productData.length; i++) {
+      		// If current product encountered, skip and add increment loop control
+      		  if(productData[i].productTitle == "{{product.title}}") {
+      		    maxItems++
+      		    continue
+      		  }
+      		  // Double check current product is not selected and if the maximum number of products has not been reached, add product to output
+      		  if(productData[i].productTitle != "{{product.title}}" && i < maxItems) {
+        		    var xselloutput = '<li>'
+    								  	+ '<div class="image">'
+    								  		+ '<a href="/products/' + productData[i].productHandle +'">'
+    								  			+ '<img src="' + productData[i].productImage + '" />'
+    								  		+ '</a>'
+    								  	+ '</div>'
+    									+ '<div class="producttitle">'
+    							  			+ '<a href="/products/' + productData[i].productHandle + '">' + productData[i].productTitle + '</a>'
+    						  			+ '</div>'
+    						  			+ '<div class="money">'
+    						  				+ '<a href="/products/' + productData[i].productHandle + '">' + productData[i].productPrice + '</a>'
+    						  		  + '</div>'
+    					  			+ '</li>';
+        			  crpList.append(xselloutput)
+      		  }
+      			
+    		}
+    	}
+      
+    })
+  } else if(showDefault == "true" || showDefault == true) {
+//     if(sectionHeader == null) throw new Error("No default collection found.")
+    
+    
+    
+    // Use default Shopify collection-based related products function 
+    {% assign number_of_related_products_per_row = defaultProductCount %}
+    {% assign number_of_rows = 1 %}
+    
+    {% assign heading = 'Other fine products' %}
+    
+    {% comment %}
+      Set either or both to true, if you want
+      to limit yourself to items with same vendor, and/or type.
+    {% endcomment %}
+    
+    {% assign same_vendor = false %}
+    {% assign same_type = false %}
+    
+    {% comment %}
+      Collections to ignore.
+      Never pick related items from those.
+    {% endcomment %}
+    
+    {% assign exclusions = '' | split: ',' %}
+
+    
+    {% if product.metafields.c_f['Related Products'] %}
+      {% assign collection = collections[product.metafields.c_f['Related Products']] %}
+    {% else %}  
+      {% assign collection = collections.all %}
+    {% endif %}
+    
+    {% assign found_a_collection = false %}
+    {% if collection and collection.all_products_count > 1 %}
+      {% unless exclusions contains collection.handle %}
+        {% assign found_a_collection = true %}
+      {% endunless %}
+    {% endif %}
+    {% unless found_a_collection %}
+      {% for c in product.collections %}
+        {% unless exclusions contains c.handle or c.all_products_count < 2 %}
+          {% assign found_a_collection = true %}
+          {% assign collection = c %}
+          {% break %}
+        {% endunless %}
+      {% endfor %}
+    {% endunless %}
+    
+    {% if found_a_collection %}
+    
+      {% assign counter = 0 %}
+      {% assign break_at = number_of_rows | times: number_of_related_products_per_row %}
+      {% assign current_product = product %}
+    
+
+      {% capture related_items %}
+        "
+        {%- for product in collection.products -%}
+          {%- unless product.handle == current_product.handle -%}
+             {%- unless same_vendor and current_product.vendor != product.vendor -%}
+               {%- unless same_type and current_product.type != product.type -%}
+                    <li><div class='image'><a href='/products/{{ product.handle }}'><img src='{{ product.images[0]["src"] | product_img_url: 'medium' }}' /></a></div><div class='producttitle'><a href='/products/{{ product.handle }}'>{{ product.title }}</a></div><div class='money'><a href='/products/{{ product.handle }}'>{{ product.price | money_without_currency }}</a></div></li>
+                 {%- assign counter = counter | plus: 1 -%}
+                 {%- if counter == break_at -%}
+                   {%- break -%}
+                 {%- endif -%}
+               {%- endunless -%}
+            {%- endunless -%}
+          {%- endunless -%}
+        {%- endfor -%}
+        "
+      {% endcapture %}
+    
+      {% assign related_items = related_items | trim %}
+    
+      
+         
+    {% endif %}
+        
+    {% if related_items == "" or related_items == nil %}
+    
+      {% assign related_items = "''" %}
+    
+    {% endif %}
+        
+    var output = {{ related_items }}
+    var contentCheck = false
+    
+    if(output.length > 0) {
+      $('#cross-sell').append(sectionHeader + '<ul class="cross-sell"></ul>'); // write the title and container to the page
+      var crpList = $("ul.cross-sell")
+      contentCheck = true
+      crpList.append(output)
+      
+      // Use default randomizer to scramble X amount of items on page
+        jQuery('.cross-sell > li').pick((productPageMaxItems != null ? productPageMaxItems : checkoutPageMaxItems))
+      
+      
+      console.log("Default products loaded")
+    } else {
+      console.log("No default collection found for product")
+    }
+    
+  } 
+  
+  {% comment %} =========== END GET GROUP ============= {% endcomment %}
+  
+
+ 
+  
+//]]>
+</script>

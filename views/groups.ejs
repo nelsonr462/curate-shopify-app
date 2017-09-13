@@ -1,0 +1,252 @@
+<% include ./include/header.ejs%>
+  <link rel="stylesheet" href="./css/ladda-themeless.min.css" >
+  <script type="text/javascript">
+    ShopifyApp.init({
+      apiKey: <%-JSON.stringify(appId)%>,
+      shopOrigin: 'https://'+<%-JSON.stringify(shop)%>+'.myshopify.com'
+    });
+    
+    ShopifyApp.ready(function(){
+      ShopifyApp.Bar.initialize({
+        title: 'Help',
+        buttons: {
+          primary : { label: "Help/Install", href:"/help?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+          secondary: [
+            { label: "Products", href:"/dashboard?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+            { label: "Groups", href:"/groups?shop="+<%-JSON.stringify(shop)%>, target:"app" },
+            { label: "Settings", href:"/settings?shop="+<%-JSON.stringify(shop)%>, target:"app" }
+            
+          ]
+        }
+     
+      });
+    });
+  </script>
+  
+  
+ 
+  <!-- Custom styles for this template -->
+  <link href="./css/groups.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="container-fluid">
+    <div class="row" style="margin: 0">
+      <div class="col-sm-12 col-md-12 main">
+
+
+        <h3 class="sub-header">Groups</h2>
+        <p style="margin-bottom: 40px;">Here you can view and edit your custom related products groups. You can edit multiple groups at a time if you would like, and you can also quickly edit individual groups by hitting the edit button to the right of every group.</p>
+        
+        <div class="table-responsive">
+          <table id="products" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+              <tr class="groupHeaders">
+                <th>Group Name</th>
+                <th>Group ID</th>
+                <th>Products</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% var i = 0 %>
+              <% if ( groups.length > 0 ) {%>
+              <%   groups.forEach(function(group) { %>
+              
+                  <tr class="groupData">
+                    <td class="groupTitle"><%=group.key%></td>
+                    <td ><%=group.id%></td></td>
+
+                    
+                    <td  data-id="<%=group.value%>" index= "<%=i%>" groupId="<%=group.id%>">  
+                      <% var groupProducts = JSON.parse(group.value) %>
+                      <% if(groupProducts.products != null) {%>
+                      <%   for(var j = 0; j < groupProducts.products.length; j++) { %>
+                        <%=groupProducts.products[j]["productTitle"]%><%if(j < groupProducts.products.length - 1) { %>, <% } %>
+                      <%   } %>
+                      <% } else {%>
+                      <%="None"%>
+                      <% }%>
+                      <span class="editButton glyphicon glyphicon-edit" data-toggle="modal" data-target="#groupModal"></span>
+                      
+                    </td>
+                    
+                  </tr>
+                  <% i++ %>
+              <%   })%>
+              <% } else { %>
+              
+              <tr class="emptyMessage" style="pointer-events: none">
+                <td class="groupTitle" style="display: none"> </td>
+                <td colspan="3" style="text-align: center">Looks you don't have any groups! Click 'Create Group' to make your first one!</td>
+                <td data-id="451234" index="0" style="display: none"> 
+                  <span class="editButton glyphicon glyphicon-edit" data-toggle="modal" data-target="#groupModal"></span>
+                </td>
+              </tr>
+
+              <% } %>
+              
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="dataTables_paginate paging_simple_numbers" id="paginate">
+          <ul class="pagination">
+            
+          </ul>
+        </div>
+      </div>
+      <div class="alert alert-success fade in collapse" style="opacity: 0; margin-top: 20px;">
+        <strong>Settings saved!</strong> 
+      </div>
+    </div>
+    
+  </div>
+
+ <!--  MODALS  -->
+  
+  <!--  Single Product Selected  -->
+  <div class="modal fade" id="groupModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="editTitle" class="modal-title">Edit Group</h4>
+          <h4 id="createTitle" class="modal-title" style="display:none">Create Group</h4>
+        </div>
+        
+        <div id="newGroupDetails" class="modal-body newDetails" style="display: none;">
+          
+          <label for="groupName">
+            Enter a title for the new group
+            <input type="text" id="groupName" class="form-control" placeholder="Group title">
+            <p class="nameWarning">Please enter a name for the group</p>
+          </label>  
+        </div>
+        
+        <div id="groupItems" class="modal-body">
+          <label for="id_label_single">
+            Select a new set of products for this group
+            
+            <select class="groupSelect js-states form-control" id="id_label_single"  multiple="multiple" style="width: 100%">
+              <% var groupList = [] %>
+              <% if (products.length > 0) { %>
+              <%   products.forEach(function(product){ %>
+              <%     if(groupList.indexOf(product) < 0) { %>
+              <%       groupList.push(product) %>
+              
+              <%       if(product.images.length > 0) { %>
+                         <option productData="<%="{\"productId\":\""+product.id+"\", \"productTitle\":\""+product.title+"\", \"productImage\":\""+product.images[0]["src"]+"\" ,\"productPrice\":\""+product.variants[0]["price"]+"\", \"productHandle\" : \"" + product.handle + "\"}"%>" ><%=product.title%></option>
+              <%       } else {%>
+                         <option productData="<%="{\"productId\":\""+product.id+"\", \"productTitle\":\""+product.title+"\", \"productImage\":\""+"https:\/\/cdn.shopify.com/s/images/admin/no-image-small.gif"+"\" ,\"productPrice\":\""+product.variants[0]["price"]+"\", \"productHandle\" : \"" + product.handle + "\"}"%>" ><%=product.title%></option>
+              <%       } %>
+              <%     } %>
+              <%   }) %>
+              <% } else { %>
+                <option>None</option>
+                <option>Default</option>
+                <option>Test1</option>
+                <option>Test2</option>
+              <% } %>
+            </select>
+            
+          </label>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary ladda-button" data-style="expand-right" id="saveNewGroup" style="display: none;" data-loading-text="Saving..."><span class="ladda-label">Save New Group</span></button>
+          <button type="button" class="btn btn-primary ladda-button" data-style="expand-right" id="saveGroup" data-loading-text="Saving..."><span class="ladda-label">Save</span></button>
+          <button type="button" class="btn btn-default cancelButton" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <!--  Multiple Products Selected  -->
+  <div class="modal fade" id="multiGroupModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Multiple Groups</h4>
+        </div>
+        
+        <div id="multiGroupItems" class="modal-body">
+          <label for="id_label_single">
+            Select a new set of products for the selected groups
+          
+            <select class="multiGroupSelect js-states form-control" id="id_label_single" multiple="multiple" style="width: 100%">
+              <% var groupList = [] %>
+              <% if (products.length > 0) { %>
+              <%   products.forEach(function(product){ %>
+              <%     if(groupList.indexOf(product) < 0) { %>
+              <%       groupList.push(product) %>
+              
+              <%       if(product.images.length > 0) { %>
+                         <option productData="<%="{\"productId\":\""+product.id+"\", \"productTitle\":\""+product.title+"\", \"productImage\":\""+product.images[0]["src"]+"\" ,\"productPrice\":\""+product.variants[0]["price"]+"\", \"productHandle\" : \"" + product.handle + "\"}"%>" ><%=product.title%></option>
+              <%       } else {%>
+                         <option productData="<%="{\"productId\":\""+product.id+"\", \"productTitle\":\""+product.title+"\", \"productImage\":\""+"https:\/\/cdn.shopify.com/s/images/admin/no-image-small.gif"+"\" ,\"productPrice\":\""+product.variants[0]["price"]+"\", \"productHandle\" : \"" + product.handle + "\"}"%>" ><%=product.title%></option>
+              <%       } %>
+              
+                       
+              <%     } %>
+              <%   }) %>
+              <% } else { %>
+                <option>None</option>
+                <option>Default</option>
+                <option>Test1</option>
+                <option>Test2</option>
+              <% } %>
+            </select>
+          </label>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary ladda-button" data-style="expand-right" id="saveMultiGroup" data-loading-text="Saving..."><span class="ladda-label">Save</span></button>
+          <button type="button" class="btn btn-default cancelButton" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <!--  Delete Groups Selected  -->
+  <div class="modal fade" id="deleteGroupModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Delete Groups</h4>
+        </div>
+        
+        <div id="deleteGroupDesc" class="modal-body">
+          Are you sure you want to permanently delete these groups? All products that currently have these groups will be reset to have none.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary ladda-button" data-style="expand-right" id="deleteGroup" ><span class="ladda-label">Yes</span></button>
+          <button type="button" class="btn btn-default cancelButton" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <input type="hidden" name="_csrf" value=<%=csrfToken%>>
+  
+  <!--  /MODALS  -->
+
+  <% include ./include/footer.ejs%>
+  
+  <script src="./js/spin.min.js"></script>
+  <script src="./js/ladda.min.js"></script>
+  <script src="./js/groups.js"></script>
+</body>
+
+</html>
